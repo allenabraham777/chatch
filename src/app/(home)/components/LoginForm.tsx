@@ -1,8 +1,12 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FaGithub, FaGoogle } from 'react-icons/fa';
+import Image from 'next/image';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 import { loginFormSchema } from '@/schema/authFormSchema';
 import {
@@ -15,11 +19,14 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import Image from 'next/image';
+import { useToast } from '@/components/ui/use-toast';
 
 type Props = {};
 
 const LoginForm = (props: Props) => {
+    const [loading, setLoading] = useState(false);
+    const { toast } = useToast();
+    const router = useRouter();
     const form = useForm<z.infer<typeof loginFormSchema>>({
         resolver: zodResolver(loginFormSchema),
         defaultValues: {
@@ -29,12 +36,23 @@ const LoginForm = (props: Props) => {
     });
 
     const onSubmit = (values: z.infer<typeof loginFormSchema>) => {
-        console.log(values);
+        setLoading(true);
+        signIn('credentials', { redirect: false, ...values })
+            .then((callback) => {
+                if (callback?.error) {
+                    toast({ description: 'Invalid credentials!', variant: 'destructive' });
+                }
+
+                if (callback?.ok) {
+                    router.push('/conversations');
+                }
+            })
+            .finally(() => setLoading(false));
     };
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="">
+            <form onSubmit={form.handleSubmit(onSubmit)} method="POST">
                 <div className="flex gap-1 items-center justify-center mb-6">
                     <Image
                         src="/chatch.png"
@@ -85,10 +103,18 @@ const LoginForm = (props: Props) => {
                     <div className="absolute h-0 border-t-2 w-full top-[50%] -translate-y-[50%]"></div>
                 </div>
                 <div className="flex gap-4">
-                    <Button variant="outline" className="flex-1 text-gray-500 hover:text-gray-600">
+                    <Button
+                        variant="outline"
+                        onClick={() => signIn('github', { redirect: false })}
+                        className="flex-1 text-gray-500 hover:text-gray-600"
+                    >
                         <FaGithub className="text-2xl" />
                     </Button>
-                    <Button variant="outline" className="flex-1 text-gray-500 hover:text-gray-600">
+                    <Button
+                        variant="outline"
+                        onClick={() => signIn('google', { redirect: false })}
+                        className="flex-1 text-gray-500 hover:text-gray-600"
+                    >
                         <FaGoogle className="text-2xl" />
                     </Button>
                 </div>

@@ -1,7 +1,10 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Image from 'next/image';
+import axios from 'axios';
 
 import { registerFormSchema } from '@/schema/authFormSchema';
 import {
@@ -14,26 +17,46 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import Image from 'next/image';
+import { useToast } from '@/components/ui/use-toast';
 
 type Props = {};
 
 const RegisterForm = (props: Props) => {
+    const [loading, setLoading] = useState(false);
+    const { toast } = useToast();
     const form = useForm<z.infer<typeof registerFormSchema>>({
         resolver: zodResolver(registerFormSchema),
         defaultValues: {
             email: '',
-            password: ''
+            password: '',
+            name: '',
+            confirmPassword: ''
         }
     });
 
-    const onSubmit = (values: z.infer<typeof registerFormSchema>) => {
-        console.log(values);
+    const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
+        setLoading(true);
+        try {
+            const { data: user } = await axios.post('/api/auth/register', values);
+            toast({
+                title: 'Account created successfully',
+                description: 'Login to your account to continue.',
+                variant: 'default'
+            });
+            form.reset();
+        } catch (error) {
+            toast({
+                title: 'Account creation failed',
+                description: 'Please try again later.',
+                variant: 'destructive'
+            });
+        }
+        setLoading(false);
     };
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="">
+            <form onSubmit={form.handleSubmit(onSubmit)} method="POST">
                 <div className="flex gap-1 items-center justify-center mb-6">
                     <Image
                         src="/chatch.png"
@@ -46,6 +69,7 @@ const RegisterForm = (props: Props) => {
                 </div>
                 <h2 className="text-2xl text-primary font-bold">Create your account.</h2>
                 <FormField
+                    disabled={loading}
                     control={form.control}
                     name="email"
                     render={({ field }) => (
@@ -59,6 +83,7 @@ const RegisterForm = (props: Props) => {
                     )}
                 />
                 <FormField
+                    disabled={loading}
                     control={form.control}
                     name="name"
                     render={({ field }) => (
@@ -72,6 +97,7 @@ const RegisterForm = (props: Props) => {
                     )}
                 />
                 <FormField
+                    disabled={loading}
                     control={form.control}
                     name="password"
                     render={({ field }) => (
@@ -85,6 +111,7 @@ const RegisterForm = (props: Props) => {
                     )}
                 />
                 <FormField
+                    disabled={loading}
                     control={form.control}
                     name="confirmPassword"
                     render={({ field }) => (
