@@ -15,7 +15,7 @@ const ProtectionProvider = ({ children }: Props) => {
             router.push('/');
         }
     }, [isSignedIn, isLoaded, router]);
-    return <div>{children}</div>;
+    return <>{children}</>;
 };
 
 export default ProtectionProvider;
