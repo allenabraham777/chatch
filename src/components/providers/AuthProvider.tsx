@@ -1,13 +1,13 @@
 'use client';
 import React from 'react';
-import { SessionProvider } from 'next-auth/react';
+import { ClerkProvider } from '@clerk/nextjs';
 
 type Props = {
     children: React.ReactNode;
 };
 
 const AuthContext = ({ children }: Props) => {
-    return <SessionProvider>{children}</SessionProvider>;
+    return <ClerkProvider>{children}</ClerkProvider>;
 };
 
 export default AuthContext;
