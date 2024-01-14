@@ -25,7 +25,8 @@ export async function POST(request: Request) {
         data: {
             id: payload.data.id,
             name: `${payload.data.first_name} ${payload.data.last_name}`,
-            email: payload.data.email_addresses[0].email_address
+            email: payload.data.email_addresses[0].email_address,
+            image: payload.data.image_url || ''
         }
     });
     return Response.json({ message: 'Received' });

@@ -25,8 +25,8 @@ const Sidebar = (props: Props) => {
     const pathname = usePathname();
     const router = useRouter();
     return (
-        <div className="hidden h-full sm:flex flex-col items-center justify-between pb-4 shadow-lg">
-            <ul role="list" className="flex flex-col">
+        <div className="hidden h-full sm:flex flex-col items-center justify-between pb-4 shadow-lg border-r">
+            <ul role="list" className="flex flex-col p-2 gap-1">
                 {routes.map((route) => {
                     const Icon = route.icon;
                     return (
@@ -34,12 +34,16 @@ const Sidebar = (props: Props) => {
                             key={route.label}
                             onClick={() => router.push(route.route)}
                             variant="ghost"
-                            className={cn('rounded-none p-8 w-full', {
-                                'bg-gray-100': route.route === pathname
+                            className={cn('py-8 px-6 w-full', {
+                                'bg-sky-100 hover:bg-sky-200': pathname.includes(route.route)
                             })}
                         >
-                            <Icon />
-                            <span className="sr-only"></span>
+                            <Icon
+                                className={cn('text-gray-400', {
+                                    'text-foreground': pathname.includes(route.route)
+                                })}
+                            />
+                            <span className="sr-only">{route.label}</span>
                         </Button>
                     );
                 })}
