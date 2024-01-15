@@ -2,6 +2,7 @@
 import React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { CldUploadButton } from 'next-cloudinary';
 
 import { Button } from '@/components/ui/button';
 import { Image as ImageIcon, SendHorizontalIcon } from 'lucide-react';
@@ -37,11 +38,30 @@ const Footer = (props: Props) => {
             });
         }
     };
+    const onUpload = async (file: any) => {
+        try {
+            await axios.post(`/api/conversations/${conversationId}/messages`, {
+                image: file.info.url
+            });
+        } catch (error) {
+            toast({
+                title: 'Something went wrong!',
+                description: 'Unable to send image. Please try again later.',
+                variant: 'destructive'
+            });
+        }
+    };
+
     return (
         <div className="border-t border-l py-4 px-2 lg:px-8 flex gap-2 lg:gap-4 bg-background">
-            <Button variant="ghost" className="p-0">
+            <CldUploadButton
+                options={{ maxFiles: 1 }}
+                uploadPreset="chatch"
+                className="p-0"
+                onUpload={onUpload}
+            >
                 <ImageIcon className="w-8 h-8 text-sky-500" />
-            </Button>
+            </CldUploadButton>
             <div className="flex-1">
                 <Form {...form}>
                     <form

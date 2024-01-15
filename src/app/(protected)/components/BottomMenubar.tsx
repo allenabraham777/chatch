@@ -34,16 +34,17 @@ const BottomMenubar = (props: Props) => {
                             key={route.label}
                             onClick={() => router.push(route.route)}
                             variant="outline"
+                            size="sm"
                             className={cn('rounded-none flex-1 py-8', {
                                 'bg-sky-100 hover:bg-sky-200': pathname.includes(route.route)
                             })}
                         >
                             <Icon />
-                            <span className="sr-only"></span>
+                            <span className="sr-only">{route.label}</span>
                         </Button>
                     );
                 })}
-                <Button variant="outline" className="rounded-none flex-1 py-8">
+                <Button variant="outline" size="sm" className="rounded-none flex-1 py-8">
                     <UserButton />
                 </Button>
             </ul>
