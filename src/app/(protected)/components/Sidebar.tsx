@@ -25,7 +25,7 @@ const Sidebar = (props: Props) => {
     const pathname = usePathname();
     const router = useRouter();
     return (
-        <div className="hidden h-full sm:flex flex-col items-center justify-between pb-4 shadow-lg border-r">
+        <div className="hidden h-full lg:flex flex-col items-center justify-between pb-4 shadow-lg border-r">
             <ul role="list" className="flex flex-col p-2 gap-1">
                 {routes.map((route) => {
                     const Icon = route.icon;

@@ -16,8 +16,8 @@ const ConversationList = (props: Props) => {
     const { isOpen, conversationId } = useConversation();
     return (
         <aside
-            className={cn('bg-background flex flex-col pb-16 sm:pb-0 h-full w-full sm:w-80', {
-                'hidden sm:flex': isOpen
+            className={cn('bg-background flex flex-col pb-16 lg:pb-0 h-full w-full lg:w-80', {
+                'hidden lg:flex': isOpen
             })}
         >
             <div className="py-4 px-8 flex justify-between items-center">
