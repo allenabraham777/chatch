@@ -68,7 +68,9 @@ const ConversationCard = ({ conversation, selected }: Props) => {
                         </span>
                     )}
                 </div>
-                <p className="text-gray-600 text-sm">{lastMessageText}</p>
+                <p className={cn('text-blue-500 text-sm truncate', { 'text-gray-400': hasSeen })}>
+                    {lastMessageText}
+                </p>
             </div>
         </article>
     );

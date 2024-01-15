@@ -23,7 +23,7 @@ const ConversationList = (props: Props) => {
             <div className="py-4 px-8 flex justify-between items-center">
                 <h3 className="font-bold font-sans text-xl text-foreground">Conversations</h3>
                 <Button variant="ghost">
-                    <MdGroupAdd className="h-6 w-6" />
+                    <MdGroupAdd className="h-6 w-6 text-sky-500" />
                 </Button>
             </div>
             <div className="flex-1 px-2 overflow-y-auto">
