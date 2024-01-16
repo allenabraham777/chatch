@@ -10,6 +10,7 @@ import Image from 'next/image';
 import useConversation from '@/hooks/useConversations';
 import axios from 'axios';
 import { Check, CheckCheck } from 'lucide-react';
+import CreateGroupDialog from '@/components/compounds/ImageDialog';
 
 type Props = {
     message: FullMessage;
@@ -69,7 +70,7 @@ const MessageBody = ({ message, prevMessage }: Props) => {
                         })}
                     >
                         <h2 className="capitalize text-gray-600 text-sm font-medium">
-                            {message.sender.name?.toLowerCase()}
+                            {isSender ? 'You' : message.sender.name?.toLowerCase()}
                         </h2>
                         <h2 className="capitalize text-gray-400 text-xs">
                             {format(message.createdAt, 'p')}
@@ -84,7 +85,9 @@ const MessageBody = ({ message, prevMessage }: Props) => {
                         )}
                     >
                         {message?.image ? (
-                            <Image src={message.image} width={240} height={240} alt="image" />
+                            <CreateGroupDialog image={message.image}>
+                                <Image src={message.image} width={240} height={240} alt="image" />
+                            </CreateGroupDialog>
                         ) : (
                             message.body
                         )}
