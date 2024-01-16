@@ -8,6 +8,7 @@ import { FullConversation } from '@/types';
 import { useReceiver } from '@/hooks/useReceiver';
 import { useSession } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
+import GroupAvatar from '@/components/compounds/GroupAvatar';
 
 type Props = {
     conversation: FullConversation;
@@ -56,7 +57,11 @@ const ConversationCard = ({ conversation, selected }: Props) => {
             )}
             onClick={openConversations}
         >
-            <UserAvatar user={receiver!} />
+            {conversation.isGroup ? (
+                <GroupAvatar users={conversation.users} />
+            ) : (
+                <UserAvatar user={receiver!} />
+            )}
             <div className="flex flex-col flex-1">
                 <div className="flex items-center justify-between">
                     <span className="text-base font-medium font-sans capitalize">

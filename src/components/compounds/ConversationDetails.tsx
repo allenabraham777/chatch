@@ -25,6 +25,7 @@ import { Button } from '../ui/button';
 import UserAvatar from './UserAvatar';
 import { format } from 'date-fns';
 import UserList from './UserList';
+import GroupAvatar from './GroupAvatar';
 
 type Props = {
     children: React.ReactNode;
@@ -41,7 +42,11 @@ const ProfileCard = (props: { conversation: Partial<FullConversation>; receiver:
 
     return (
         <div className="flex-1 flex flex-col items-center gap-2 h-full">
-            <UserAvatar className="w-24 h-24" user={props.receiver} />
+            {props.conversation.isGroup ? (
+                <GroupAvatar users={props.conversation.users!} className="w-24 h-24" />
+            ) : (
+                <UserAvatar className="w-24 h-24" user={props.receiver} />
+            )}
             <h1 className="capitalize text-2xl text-foreground font-bold font-sans">
                 {props.conversation.name || props.receiver?.name.toLowerCase()}
             </h1>

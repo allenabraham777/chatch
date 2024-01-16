@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, MoreHorizontal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import ConversationDetails from '@/components/compounds/ConversationDetails';
+import GroupAvatar from '@/components/compounds/GroupAvatar';
 
 type Props = {
     conversation: FullConversation;
@@ -28,7 +29,11 @@ const Header = ({ conversation }: Props) => {
             <Button variant="ghost" className="p-0" onClick={() => router.back()}>
                 <ChevronLeft className="h-8 w-8 text-sky-500" />
             </Button>
-            <UserAvatar user={receiver!} />
+            {conversation.isGroup ? (
+                <GroupAvatar users={conversation.users} />
+            ) : (
+                <UserAvatar user={receiver!} />
+            )}
             <div className="flex-1 flex flex-col">
                 <h2 className="text-xl font-semibold font-sans capitalize">
                     {conversation.name || receiver?.name.toLowerCase()}

@@ -1,15 +1,18 @@
 'use client';
 import React from 'react';
 import { MdGroupAdd } from 'react-icons/md';
+import { User } from '@prisma/client';
 
 import useConversation from '@/hooks/useConversations';
 import { FullConversation } from '@/types';
 import ConversationCard from './ConversationCard';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import CreateGroupDialog from './CreateGroupDialog';
 
 type Props = {
     list: FullConversation[];
+    users: User[];
 };
 
 const ConversationList = (props: Props) => {
@@ -22,9 +25,11 @@ const ConversationList = (props: Props) => {
         >
             <div className="py-4 px-8 flex justify-between items-center">
                 <h3 className="font-bold font-sans text-xl text-foreground">Conversations</h3>
-                <Button variant="ghost">
-                    <MdGroupAdd className="h-6 w-6 text-sky-500" />
-                </Button>
+                <CreateGroupDialog users={props.users}>
+                    <Button variant="ghost">
+                        <MdGroupAdd className="h-6 w-6 text-sky-500" />
+                    </Button>
+                </CreateGroupDialog>
             </div>
             <div className="flex-1 px-2 overflow-y-auto">
                 {props.list.map((conversation) => (
