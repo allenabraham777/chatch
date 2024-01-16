@@ -1,9 +1,25 @@
 import React from 'react';
 
-type Props = {};
+import getMessages from '@/actions/getMessages';
+import MessageBody from './components/MessageBody';
 
-const ConversationPage = (props: Props) => {
-    return <div className="flex-1 overflow-y-auto border-l px-8">Messages</div>;
+type Props = {
+    params: { conversationId: string };
+};
+
+const ConversationPage = async (props: Props) => {
+    const messages = await getMessages(props.params.conversationId);
+    return (
+        <div className="flex-1 max-w-full overflow-y-auto border-l px-2 pb-10">
+            {messages.map((message, index) => (
+                <MessageBody
+                    key={message.id}
+                    message={message}
+                    prevMessage={index === 0 ? null : messages[index - 1]}
+                />
+            ))}
+        </div>
+    );
 };
 
 export default ConversationPage;
