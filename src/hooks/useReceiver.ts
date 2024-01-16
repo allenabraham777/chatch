@@ -3,7 +3,7 @@ import { FullConversation } from '@/types';
 import { useMemo } from 'react';
 import { User } from '@prisma/client';
 
-export const useReceiver = (conversation: FullConversation) => {
+export const useReceiver = (conversation: FullConversation | { users: User[] }) => {
     const { session, isLoaded } = useSession();
     const receiver = useMemo(() => {
         if (!isLoaded || !session?.user) return null;

@@ -7,6 +7,7 @@ import UserAvatar from '@/components/compounds/UserAvatar';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, MoreHorizontal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import ConversationDetails from '@/components/compounds/ConversationDetails';
 
 type Props = {
     conversation: FullConversation;
@@ -29,14 +30,16 @@ const Header = ({ conversation }: Props) => {
             </Button>
             <UserAvatar user={receiver!} />
             <div className="flex-1 flex flex-col">
-                <h2 className="text-xl font-semibold font-sans">
-                    {conversation.name || receiver?.name}
+                <h2 className="text-xl font-semibold font-sans capitalize">
+                    {conversation.name || receiver?.name.toLowerCase()}
                 </h2>
                 <h4 className="text-sm text-gray-500">{statusText}</h4>
             </div>
-            <Button variant="ghost">
-                <MoreHorizontal className="text-sky-500 h-8 w-8" />
-            </Button>
+            <ConversationDetails data={conversation}>
+                <Button variant="ghost">
+                    <MoreHorizontal className="text-sky-500 h-8 w-8" />
+                </Button>
+            </ConversationDetails>
         </header>
     );
 };

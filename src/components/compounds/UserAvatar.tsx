@@ -4,11 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 type Props = {
     user: Partial<User>;
+    className?: string;
 };
 
-const UserAvatar = ({ user }: Props) => {
+const UserAvatar = ({ user, className }: Props) => {
     return (
-        <Avatar>
+        <Avatar className={className}>
             <AvatarImage src={user.image!} />
             <AvatarFallback className="bg-sky-500 text-2xl font-semibold text-primary-foreground">
                 {user!.name![0]}
