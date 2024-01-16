@@ -23,8 +23,8 @@ export const POST = async (req: Request) => {
                     isGroup,
                     users: {
                         connect: [
-                            ...members!.map((member: string) => ({
-                                id: member
+                            ...members!.map((member) => ({
+                                id: member.value
                             })),
                             {
                                 id: user.id
@@ -45,12 +45,12 @@ export const POST = async (req: Request) => {
                 OR: [
                     {
                         userIds: {
-                            equals: [user.id, userId]
+                            equals: [user.id, userId!]
                         }
                     },
                     {
                         userIds: {
-                            equals: [userId, user.id]
+                            equals: [userId!, user.id]
                         }
                     }
                 ]
