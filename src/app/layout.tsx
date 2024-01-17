@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 
 import { Toaster } from '@/components/ui/toaster';
 import AuthProvider from '@/components/providers/AuthProvider';
+import ActiveUserProvider from '@/components/providers/ActiveUserProvider';
 
 import './globals.css';
 
@@ -18,8 +19,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en">
             <body className={inter.className}>
                 <AuthProvider>
-                    {children}
-                    <Toaster />
+                    <ActiveUserProvider>
+                        {children}
+                        <Toaster />
+                    </ActiveUserProvider>
                 </AuthProvider>
             </body>
         </html>

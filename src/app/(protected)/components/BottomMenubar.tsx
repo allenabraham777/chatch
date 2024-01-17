@@ -36,7 +36,7 @@ const BottomMenubar = (props: Props) => {
                             variant="outline"
                             size="sm"
                             className={cn('rounded-none flex-1 py-8', {
-                                'bg-sky-100 hover:bg-sky-200': pathname.includes(route.route)
+                                'bg-sky-100 hover:bg-sky-200': pathname?.includes(route.route)
                             })}
                         >
                             <Icon />

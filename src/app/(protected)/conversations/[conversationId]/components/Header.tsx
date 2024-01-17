@@ -1,5 +1,6 @@
 'use client';
 import React, { useMemo } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { useReceiver } from '@/hooks/useReceiver';
 import { FullConversation } from '@/types';
@@ -9,6 +10,7 @@ import { ChevronLeft, MoreHorizontal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import ConversationDetails from '@/components/compounds/ConversationDetails';
 import GroupAvatar from '@/components/compounds/GroupAvatar';
+import activeUserSelector from '@/selectors/activeUserSelector';
 
 type Props = {
     conversation: FullConversation;
@@ -16,14 +18,15 @@ type Props = {
 
 const Header = ({ conversation }: Props) => {
     const receiver = useReceiver(conversation);
+    const activeUsersList = useRecoilValue(activeUserSelector);
     const router = useRouter();
     const statusText = useMemo(() => {
         const members = conversation.users || [];
         if (conversation.isGroup) {
             return `${members.length} members`;
         }
-        return 'Online';
-    }, [conversation]);
+        return activeUsersList.includes(receiver!.id) ? 'Online' : 'Offline';
+    }, [conversation, activeUsersList, receiver]);
     return (
         <header className="flex border-b w-full py-4 px-2 lg:px-8 bg-background border-l gap-2 items-center">
             <Button variant="ghost" className="p-0" onClick={() => router.back()}>

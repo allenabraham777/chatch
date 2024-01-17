@@ -26,7 +26,6 @@ const Footer = (props: Props) => {
         }
     });
     const onSubmit = async (values: z.infer<typeof messageFormSchema>) => {
-        console.log(values);
         try {
             await axios.post(`/api/conversations/${conversationId}/messages`, values);
             form.reset();

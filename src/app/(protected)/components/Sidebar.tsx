@@ -35,12 +35,12 @@ const Sidebar = (props: Props) => {
                             onClick={() => router.push(route.route)}
                             variant="ghost"
                             className={cn('py-8 px-6 w-full', {
-                                'bg-sky-100 hover:bg-sky-200': pathname.includes(route.route)
+                                'bg-sky-100 hover:bg-sky-200': pathname?.includes(route.route)
                             })}
                         >
                             <Icon
                                 className={cn('text-gray-400', {
-                                    'text-foreground': pathname.includes(route.route)
+                                    'text-foreground': pathname?.includes(route.route)
                                 })}
                             />
                             <span className="sr-only">{route.label}</span>
