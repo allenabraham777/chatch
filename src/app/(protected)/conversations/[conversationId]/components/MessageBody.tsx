@@ -5,12 +5,13 @@ import { FullMessage } from '@/types';
 import UserAvatar from '@/components/compounds/UserAvatar';
 import { useSession } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
-import { format, formatDuration } from 'date-fns';
+import { format } from 'date-fns';
 import Image from 'next/image';
 import useConversation from '@/hooks/useConversations';
 import axios from 'axios';
 import { Check, CheckCheck } from 'lucide-react';
 import CreateGroupDialog from '@/components/compounds/ImageDialog';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 
 type Props = {
     message: FullMessage;
@@ -26,8 +27,14 @@ const MessageBody = ({ message, prevMessage }: Props) => {
         }
     }, [conversationId, message, session]);
     const isSender = session?.user.id === message.sender.id;
-    const isSeen = useMemo(
-        () => isSender && !!message.seen.filter((user) => user.id !== session?.user.id).length,
+    const seenText = useMemo(
+        () =>
+            isSender &&
+            message.seen
+                .filter((user) => user.id !== session?.user.id)
+                .map((user) => user.name)
+                .join(', ')
+                .toLowerCase(),
         [message, session, isSender]
     );
     const isStackMessage =
@@ -57,8 +64,15 @@ const MessageBody = ({ message, prevMessage }: Props) => {
                 >
                     <span className="absolute -bottom-3 -right-3">
                         {isSender &&
-                            (isSeen ? (
-                                <CheckCheck className="bg-sky-500 text-background p-1 h-5 w-5 rounded-full border border-background" />
+                            (seenText ? (
+                                <HoverCard>
+                                    <HoverCardTrigger asChild className="p-0">
+                                        <CheckCheck className="bg-sky-500 text-background cursor-pointer p-1 h-5 w-5 rounded-full border border-background" />
+                                    </HoverCardTrigger>
+                                    <HoverCardContent className="text-foreground text-sm py-2 px-4 max-w-52">
+                                        Seen by: <span className="capitalize">{seenText}</span>
+                                    </HoverCardContent>
+                                </HoverCard>
                             ) : (
                                 <Check className="bg-gray-400 text-background p-1 h-5 w-5 rounded-full" />
                             ))}

@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { createConversationSchema } from '@/schema/conversations';
 import prisma from '@/lib/prisma';
 import getCurrentUser from '@/actions/getCurrentUser';
+import { pusherServer } from '@/lib/pusher/pusherServer';
 
 export const POST = async (req: Request) => {
     try {
@@ -33,9 +34,22 @@ export const POST = async (req: Request) => {
                     }
                 },
                 include: {
-                    users: true
+                    users: {
+                        select: {
+                            id: true,
+                            name: true,
+                            image: true
+                        }
+                    }
                 }
             });
+
+            for (const user of newConversation.users) {
+                await pusherServer.trigger(user.id, 'conversation:new', {
+                    ...newConversation,
+                    messages: []
+                });
+            }
 
             return NextResponse.json(newConversation);
         }
@@ -77,8 +91,19 @@ export const POST = async (req: Request) => {
                 }
             },
             include: {
-                users: true
+                users: {
+                    select: {
+                        id: true,
+                        name: true,
+                        image: true
+                    }
+                }
             }
+        });
+
+        await pusherServer.trigger(userId!, 'conversation:new', {
+            ...newConversation,
+            messages: []
         });
 
         return NextResponse.json(newConversation);

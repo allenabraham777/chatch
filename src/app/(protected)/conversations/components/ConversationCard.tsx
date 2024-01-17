@@ -48,7 +48,7 @@ const ConversationCard = ({ conversation, selected }: Props) => {
 
     const openConversations = useCallback(async () => {
         router.push(`/conversations/${conversation.id}`);
-    }, [conversation, router]);
+    }, [conversation.id, router]);
     return (
         <article
             className={cn(
