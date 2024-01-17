@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Channel, Members } from 'pusher-js';
 import { useRecoilState } from 'recoil';
+import { useSession } from '@clerk/nextjs';
 
 import activeUserState from '@/store/activeUserState';
 import { pusherClient } from '@/lib/pusher/pusherClient';
@@ -9,7 +10,10 @@ import { pusherClient } from '@/lib/pusher/pusherClient';
 const useActiveUser = () => {
     const [activeUsers, setActiveUsers] = useRecoilState(activeUserState);
     const [channel, setChannel] = useState<Channel | null>(null);
+    const { session } = useSession();
     useEffect(() => {
+        if (!session?.user.id) return;
+
         let activeChannel = channel;
         if (!activeChannel) {
             activeChannel = pusherClient.subscribe('presence-chatch');
@@ -37,7 +41,7 @@ const useActiveUser = () => {
                 setChannel(null);
             }
         };
-    }, []);
+    }, [session?.user.id]);
 };
 
 export default useActiveUser;

@@ -28,6 +28,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import MultipleSelector from '@/components/ui/multiple-selector';
+import { useToast } from '@/components/ui/use-toast';
+import { Loader2 } from 'lucide-react';
 
 type Props = {
     children: React.ReactNode;
@@ -36,6 +38,8 @@ type Props = {
 
 const CreateGroupDialog = ({ children, users }: Props) => {
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const { toast } = useToast();
     const router = useRouter();
     const form = useForm<z.infer<typeof createConversationSchema>>({
         resolver: zodResolver(createConversationSchema),
@@ -48,11 +52,21 @@ const CreateGroupDialog = ({ children, users }: Props) => {
 
     const onSubmit = async (values: z.infer<typeof createConversationSchema>) => {
         try {
+            setLoading(true);
             form.reset();
             const { data } = await axios.post<Conversation>('/api/conversations', values);
             router.push(`/conversations/${data.id}`);
             setOpen(false);
-        } catch (error) {}
+        } catch (error) {
+            console.error(error);
+            toast({
+                title: 'Something went wrong!',
+                description: 'Unable to create the group please try again later',
+                variant: 'destructive'
+            });
+        } finally {
+            setLoading(false);
+        }
     };
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -79,6 +93,7 @@ const CreateGroupDialog = ({ children, users }: Props) => {
                                                     className="hidden"
                                                     {...field}
                                                     checked={value}
+                                                    disabled={loading}
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -92,7 +107,11 @@ const CreateGroupDialog = ({ children, users }: Props) => {
                                         <FormItem className="w-full flex flex-col gap-1">
                                             <FormLabel className="text-left">Group Name</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Group Name" {...field} />
+                                                <Input
+                                                    placeholder="Group Name"
+                                                    {...field}
+                                                    disabled={loading}
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -106,6 +125,7 @@ const CreateGroupDialog = ({ children, users }: Props) => {
                                             <FormLabel className="text-left">Members</FormLabel>
                                             <FormControl>
                                                 <MultipleSelector
+                                                    disabled={loading}
                                                     defaultOptions={users.map((user) => ({
                                                         label: user.name,
                                                         value: user.id
@@ -126,8 +146,12 @@ const CreateGroupDialog = ({ children, users }: Props) => {
                             </DialogDescription>
                         </DialogHeader>
                         <DialogFooter>
-                            <Button type="submit" className="bg-sky-500 hover:bg-sky-600">
-                                Create
+                            <Button
+                                disabled={loading}
+                                type="submit"
+                                className="bg-sky-500 hover:bg-sky-600"
+                            >
+                                {loading ? <Loader2 className="animate-spin" /> : 'Create'}
                             </Button>
                         </DialogFooter>
                     </form>

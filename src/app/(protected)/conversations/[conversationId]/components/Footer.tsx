@@ -1,11 +1,11 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { CldUploadButton } from 'next-cloudinary';
 
 import { Button } from '@/components/ui/button';
-import { Image as ImageIcon, SendHorizontalIcon } from 'lucide-react';
+import { Image as ImageIcon, Loader2, SendHorizontalIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { messageFormSchema } from '@/schema/messageFormSchema';
 import useConversation from '@/hooks/useConversations';
@@ -17,6 +17,7 @@ import { useToast } from '@/components/ui/use-toast';
 type Props = {};
 
 const Footer = (props: Props) => {
+    const [loading, setLoading] = useState(false);
     const { conversationId } = useConversation();
     const { toast } = useToast();
     const form = useForm<z.infer<typeof messageFormSchema>>({
@@ -27,6 +28,7 @@ const Footer = (props: Props) => {
     });
     const onSubmit = async (values: z.infer<typeof messageFormSchema>) => {
         try {
+            setLoading(true);
             await axios.post(`/api/conversations/${conversationId}/messages`, values);
             form.reset();
         } catch (error) {
@@ -35,10 +37,13 @@ const Footer = (props: Props) => {
                 description: 'Unable to send message. Please try again later.',
                 variant: 'destructive'
             });
+        } finally {
+            setLoading(false);
         }
     };
     const onUpload = async (file: any) => {
         try {
+            setLoading(true);
             await axios.post(`/api/conversations/${conversationId}/messages`, {
                 image: file.info.url
             });
@@ -48,6 +53,8 @@ const Footer = (props: Props) => {
                 description: 'Unable to send image. Please try again later.',
                 variant: 'destructive'
             });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -77,6 +84,7 @@ const Footer = (props: Props) => {
                                         <Input
                                             className="rounded-full bg-gray-100"
                                             placeholder="Message"
+                                            disabled={loading}
                                             {...field}
                                         />
                                     </FormControl>
@@ -84,11 +92,16 @@ const Footer = (props: Props) => {
                             )}
                         />
                         <Button
+                            disabled={loading}
                             type="submit"
                             variant="ghost"
                             className="h-10 w-10 bg-sky-500 hover:bg-sky-600 p-0 rounded-full"
                         >
-                            <SendHorizontalIcon className="w-6 h-6 text-background" />
+                            {loading ? (
+                                <Loader2 className="animate-spin" />
+                            ) : (
+                                <SendHorizontalIcon className="w-6 h-6 text-background" />
+                            )}
                         </Button>
                     </form>
                 </Form>
